@@ -67,6 +67,11 @@ def compute_Vande_inv(Vande):
 
 
 def encode(message):
+	"""
+	Encode a message
+	:param message: list of 15 integers in prime field F_17
+	:return: codeword: list of 17 integers in prime field F_17
+	"""
 	b = np.array(message)
 	b = np.asmatrix(b).T
 	codeword = V * b
@@ -78,6 +83,11 @@ def encode(message):
 
 
 def decode(codeword):
+	"""
+	Decode a codeword
+	:param codeword:
+	:return:
+	"""
 	b = np.matrix(np.ones((k, 1)))
 	pos = []
 	count = 0
@@ -99,10 +109,20 @@ def decode(codeword):
 	row, col = solution.shape
 	for i in range(row):
 		for j in range(col):
-			solution[i, j] = round(solution[i, j] % 17)
+			solution[i, j] = int(round(solution[i, j] % 17))
 
 	return np.array(solution).reshape(-1,).tolist()
 
+
+def listCompare(l1, l2, exceptPos):
+	if len(l1) != len(l2):
+		return False
+	for i in range(len(l1)):
+		if i == exceptPos:
+			continue
+		if l1[i] != l2[i]:
+			return False
+	return True
 
 print "encoding message"
 codeword1 = encode([5, 1, 3, 2, 4, 10, 3, 14, 12, 9, 0, 8, 16, 7, 15])
@@ -125,5 +145,21 @@ codeword3[2] = -1
 codeword3[13] = -1
 message3 = decode(codeword3)
 print "message3:\t\t", message3
+
+print "decoding from 1 error"
+codeword4 = encode([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+codeword4[9] = 0
+message4 = []
+# Naive way: iterate all possible error locations
+for i in range(k):
+	codeword_cpy = codeword4[:]
+	codeword_cpy[i] = -1
+	attempt_message = decode(codeword_cpy)
+	encodeAgain = encode(attempt_message)
+	if listCompare(codeword4, encodeAgain, i):
+		message4 = attempt_message
+		break
+print "message4:\t\t", message4
+
 
 
