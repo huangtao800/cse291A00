@@ -27,6 +27,7 @@ def L_inv_denominator(i, j, X):
 def compute_Vande_inv(Vande):
 	"""
 	compute the inverse of Vandermonde matrix
+	Reference: http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19660023042.pdf
 	:param Vande: m * m dimension matrix
 	:return: m * m dimension matrix
 	"""
@@ -85,8 +86,8 @@ def encode(message):
 def decode(codeword):
 	"""
 	Decode a codeword
-	:param codeword:
-	:return:
+	:param codeword: list of 17 integers in prime field F_17. May contain at most two erasures (-1)
+	:return: message: list of 15 integers. in prime field F_17.
 	"""
 	b = np.matrix(np.ones((k, 1)))
 	pos = []
@@ -115,6 +116,14 @@ def decode(codeword):
 
 
 def listCompare(l1, l2, exceptPos):
+	"""
+	Check whether two lists hold the same element at each position,
+	except the element at the position specified by exceptPos
+	:param l1:
+	:param l2:
+	:param exceptPos:
+	:return:
+	"""
 	if len(l1) != len(l2):
 		return False
 	for i in range(len(l1)):
